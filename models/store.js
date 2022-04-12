@@ -1,3 +1,4 @@
+const { Timestamp } = require("mongodb");
 const Mongoose = require("mongoose");
 const { Schema } = Mongoose;
 
@@ -8,7 +9,7 @@ const storeSchema = new Schema({
     auto: true,
   },
 
-  user: {
+  createdBy: {
     type: Schema.Types.ObjectId,
   },
 
@@ -22,20 +23,32 @@ const storeSchema = new Schema({
     required: true,
   },
 
-  code: {
+  shopCode: {
     type: Number,
     unique: true,
   },
-  name: {
+  shopName: {
     type: String,
     required: true,
   },
 
+  shopType: {
+    type: String,
+    required: true,
+  },
+  shopCategory:{
+    type: Array,
+    required: true
+  },
   description: {
     type: String,
     required: true,
   },
-  address: {
+  apiAddress: {
+    type: String,
+    required: true,
+  },
+  plotAddress: {
     type: String,
     required: true,
   },
@@ -68,8 +81,10 @@ const storeSchema = new Schema({
     type: String,
     required: true,
   },
+
+  // Make it array of string
   operationalDays: {
-    type: String,
+    type: Array,
     required: true,
   },
 

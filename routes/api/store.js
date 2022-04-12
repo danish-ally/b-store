@@ -55,7 +55,7 @@ router.post("/", async (req, res) => {
     return res.status(400).json({ error: "That code is already in use." });
   }
 
-  const store = new Store(Object.assign(req.body, { user: userId }));
+  const store = new Store(Object.assign(req.body, { createdBy: userId }));
 
   try {
     const salt = await bcrypt.genSalt(10);
