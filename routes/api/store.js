@@ -28,6 +28,9 @@ router.get("/:id", async (req, res) => {
   try {
     const store = await Store.findById(req.params.id);
     res.json(store);
+    // console.log(store.createdAt.getHours());
+    // console.log(store.createdAt.getMinutes());
+
   } catch (err) {
     if (err) {
       return res.status(400).json({
@@ -128,7 +131,7 @@ router.delete("/:id", async (req, res) => {
 router.get("/list/:id", async (req, res) => {
   try {
     const stores = await (
-      await Store.find({ user: req.params.id })
+      await Store.find({ user: req.params.id }).sort({ created: -1 })
     ).filter((store) => store.isActive === true);
 
     res.json(stores);
@@ -195,4 +198,26 @@ router.post("/login", (req, res) => {
   });
 });
 
+// getAllStoreByIdAndDateSortByDate
+
+router.get("/user/list/:id", async (req, res) => {
+  try {
+    const date = req.params.date;
+    const stores = await (await Store.find({ user: req.params.id }))
+      .filter(
+        (store) =>
+          store.isActive === true 
+          // store.created === date
+      )
+      .sort({ created: -1 });
+
+    res.json(stores);
+  } catch (err) {
+    if (err) {
+      return res.status(400).json({
+        error: "Your request could not be processed. Please try again.",
+      });
+    }
+  }
+});
 module.exports = router;
