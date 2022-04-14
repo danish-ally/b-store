@@ -47,13 +47,13 @@ router.post("/", async (req, res) => {
   const userId = token.id;
   console.log(userId);
 
-  const code = req.body.code;
+  // const code = req.body.code;
 
-  const existingCode = await Store.findOne({ code });
+  // const existingCode = await Store.findOne({ code });
 
-  if (existingCode) {
-    return res.status(400).json({ error: "That code is already in use." });
-  }
+  // if (existingCode) {
+  //   return res.status(400).json({ error: "That code is already in use." });
+  // }
 
   const store = new Store(Object.assign(req.body, { createdBy: userId }));
 
