@@ -10,7 +10,7 @@ const bcrypt = require("bcryptjs");
 router.get("/", async (req, res) => {
   try {
     const stores = await (
-      await Store.find()
+      await Store.find().sort({ createdAt: -1 })
     ).filter((store) => store.isActive === true);
 
     res.json(stores);
@@ -30,7 +30,6 @@ router.get("/:id", async (req, res) => {
     res.json(store);
     // console.log(store.createdAt.getHours());
     // console.log(store.createdAt.getMinutes());
-
   } catch (err) {
     if (err) {
       return res.status(400).json({
@@ -131,7 +130,7 @@ router.delete("/:id", async (req, res) => {
 router.get("/list/:id", async (req, res) => {
   try {
     const stores = await (
-      await Store.find({ user: req.params.id }).sort({ created: -1 })
+      await Store.find({ user: req.params.id }).sort({ createdAt: -1 })
     ).filter((store) => store.isActive === true);
 
     res.json(stores);
@@ -202,14 +201,24 @@ router.post("/login", (req, res) => {
 
 router.get("/user/list/:id", async (req, res) => {
   try {
-    const date = req.params.date;
-    const stores = await (await Store.find({ user: req.params.id }))
-      .filter(
-        (store) =>
-          store.isActive === true 
-          // store.created === date
-      )
-      .sort({ created: -1 });
+    let { startDate } = req.query;
+
+    if (!startDate) {
+      return res.status(400).json({
+        status: "failure",
+        message: "Please ensure you gave date",
+      });
+    }
+
+    const stores = await (
+      await Store.find({
+        user: req.params.id,
+        createdAt: {
+          $gte: new Date(new Date(startDate).setHours(00, 00, 00)),
+          $lt: new Date(new Date(startDate).setHours(23, 59, 59)),
+        },
+      }).sort({ createdAt: -1 })
+    ).filter((store) => store.isActive === true);
 
     res.json(stores);
   } catch (err) {
