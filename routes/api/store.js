@@ -197,13 +197,20 @@ router.post("/login", (req, res) => {
   });
 });
 
-// getAllStoreByIdAndDateSortByDate
+// Current day(Today) getAllStoreByIdAndDateSortByDate
 
 router.get("/user/list/:id", async (req, res) => {
   try {
-    let { startDate } = req.query;
+    let todayDate = new Date();
 
-    if (!startDate) {
+    let myDate =
+      todayDate.getUTCFullYear() +
+      "/" +
+      (todayDate.getMonth() + 1) +
+      "/" +
+      todayDate.getUTCDate();
+
+    if (!myDate) {
       return res.status(400).json({
         status: "failure",
         message: "Please ensure you gave date",
@@ -214,8 +221,8 @@ router.get("/user/list/:id", async (req, res) => {
       await Store.find({
         user: req.params.id,
         createdAt: {
-          $gte: new Date(new Date(startDate).setHours(00, 00, 00)),
-          $lt: new Date(new Date(startDate).setHours(23, 59, 59)),
+          $gte: new Date(new Date(myDate).setHours(00, 00, 00)),
+          $lt: new Date(new Date(myDate).setHours(23, 59, 59)),
         },
       }).sort({ createdAt: -1 })
     ).filter((store) => store.isActive === true);
@@ -229,4 +236,45 @@ router.get("/user/list/:id", async (req, res) => {
     }
   }
 });
+
+// getAllStoreByIdAndDateSortByDate by start date and end date
+router.get("/user/list/dates/:id", async (req, res) => {
+  try {
+    let { startDate } = req.query;
+    let { endDate } = req.query;
+
+    if (!startDate) {
+      return res.status(400).json({
+        status: "failure",
+        message: "Please ensure you gave date",
+      });
+    }
+
+    if (!endDate) {
+      return res.status(400).json({
+        status: "failure",
+        message: "Please ensure you gave date",
+      });
+    }
+
+    const stores = await (
+      await Store.find({
+        user: req.params.id,
+        createdAt: {
+          $gte: new Date(new Date(startDate).setHours(00, 00, 00)),
+          $lt: new Date(new Date(endDate).setHours(23, 59, 59)),
+        },
+      }).sort({ createdAt: -1 })
+    ).filter((store) => store.isActive === true);
+
+    res.json(stores);
+  } catch (err) {
+    if (err) {
+      return res.status(400).json({
+        error: "Your request could not be processed. Please try again.",
+      });
+    }
+  }
+});
+
 module.exports = router;
