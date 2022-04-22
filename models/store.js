@@ -16,12 +16,10 @@ const storeSchema = new Schema(
 
     email: {
       type: String,
-      required: true,
     },
 
     password: {
       type: String,
-      required: true,
     },
 
     shopCode: {
@@ -30,38 +28,31 @@ const storeSchema = new Schema(
     },
     shopName: {
       type: String,
-      required: true,
+    
     },
 
     shopType: {
       type: String,
-      required: true,
     },
     shopCategory: {
       type: Array,
-      required: true,
     },
     description: {
       type: String,
-      required: true,
     },
     apiAddress: {
       type: String,
-      required: true,
     },
     plotAddress: {
       type: String,
-      required: true,
     },
 
     city: {
       type: Schema.Types.ObjectId,
-      required: true,
     },
 
     phoneNo: {
       type: String,
-      required: true,
     },
 
     profilePhoto: {
@@ -70,28 +61,23 @@ const storeSchema = new Schema(
 
     dateOfOpening: {
       type: Date,
-      required: true,
     },
 
     openingHoursFrom: {
       type: String,
-      required: true,
     },
 
     openingHoursTo: {
       type: String,
-      required: true,
     },
 
     // Make it array of string
     operationalDays: {
       type: Array,
-      required: true,
     },
 
     pincode: {
       type: String,
-      required: true,
     },
 
     isActive: {
