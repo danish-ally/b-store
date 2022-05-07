@@ -5,6 +5,9 @@ const jwt_decode = require("jwt-decode");
 const jwt = require("jsonwebtoken");
 const key = require("../../config/key");
 const bcrypt = require("bcryptjs");
+const cloudinary = require("../../utils/cloudinary");
+const upload = require("../../utils/multer");
+const fs = require("fs");
 
 // get All store
 router.get("/", async (req, res) => {
@@ -41,21 +44,13 @@ router.get("/:id", async (req, res) => {
 
 // Add store
 
-router.post("/", async (req, res) => {
+router.post("/", upload.array("shopImage"), async (req, res) => {
   const token =
     (await jwt.decode(req.headers.authorization.split(" ")[1])) ||
     req.headers.authorization;
 
   const userId = token.id;
   console.log(userId);
-
-  // const code = req.body.code;
-
-  // const existingCode = await Store.findOne({ code });
-
-  // if (existingCode) {
-  //   return res.status(400).json({ error: "That code is already in use." });
-  // }
 
   const store = new Store(Object.assign(req.body, { createdBy: userId }));
 
@@ -65,11 +60,51 @@ router.post("/", async (req, res) => {
 
     store.password = hash;
 
-    const s1 = await store.save();
-    res.status(200).json({
-      success: true,
-      message: `Store has been added successfully!`,
-      store: s1,
+    if (req.files.length < 5) {
+      return res.status(400).json({
+        // in case things don't work out
+        msg: "Please upload minimum 5 images",
+      });
+    }
+
+    if (req.files) {
+      // if you are adding multiple files at a go
+
+      const imageURIs = []; // array to hold the image urls
+      const files = req.files; // array of images
+      for (const file of files) {
+        const { path } = file;
+        const result = await cloudinary.uploader.upload(path);
+        // console.log(result);
+        imageURIs.push(result.secure_url);
+      }
+
+      store["shopImage"] = imageURIs; // add the urls to object
+
+      const s1 = await store.save();
+      return res.status(200).json({
+        success: true,
+        message: `Store has been added successfully!`,
+        store: s1,
+      });
+    }
+
+    if (req.file && req.file.path) {
+      // if only one image uploaded
+      store["shopImage"] = req.file.path; // add the single
+      const s1 = await store.save();
+      return res.status(200).json({
+        success: true,
+        message: `Store has been added successfully!`,
+        store: s1,
+      });
+    }
+
+    // you could save here without the image
+
+    return res.status(400).json({
+      // in case things don't work out
+      msg: "Please upload an image",
     });
   } catch (err) {
     if (err) {

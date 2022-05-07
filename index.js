@@ -4,7 +4,7 @@ const mongoose = require("mongoose");
 const { port } = require("./config/key");
 const routes = require("./routes");
 const cors = require("cors");
-
+const bodyParser = require('body-parser')
 const url = "mongodb://localhost/byit-be-iam";
 const app = express();
 
