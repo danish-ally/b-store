@@ -24,7 +24,7 @@ const storeSchema = new Schema(
 
     shopCode: {
       type: Number,
-      unique: true,
+      // unique: true,
     },
     shopName: {
       type: String,

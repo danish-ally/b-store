@@ -1,5 +1,5 @@
 module.exports = {
-  port: 9001,
+  port: process.env.PORT || 9000 ,
   jwt: {
     accessSecret: process.env.JWT_SECRET_ACCESS,
     accessTokenLife: "7d",

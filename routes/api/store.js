@@ -52,13 +52,16 @@ router.post("/", upload.array("shopImage"), async (req, res) => {
   const userId = token.id;
   console.log(userId);
 
+  console.log("object");
   const store = new Store(Object.assign(req.body, { createdBy: userId }));
+  console.log("object");
 
   try {
     const salt = await bcrypt.genSalt(10);
     const hash = await bcrypt.hash(store.password, salt);
 
     store.password = hash;
+    console.log("object");
 
     if (req.files.length < 5) {
       return res.status(400).json({
@@ -67,19 +70,23 @@ router.post("/", upload.array("shopImage"), async (req, res) => {
       });
     }
 
+    console.log("first");
     if (req.files) {
       // if you are adding multiple files at a go
-
+      console.log("fff");
       const imageURIs = []; // array to hold the image urls
       const files = req.files; // array of images
+      // console.log(files);
       for (const file of files) {
-        const { path } = file;
-        const result = await cloudinary.uploader.upload(path);
-        // console.log(result);
+        // console.log(file);/
+        const result = await cloudinary.uploader.upload(file.path);
+        console.log(file.path);
         imageURIs.push(result.secure_url);
       }
 
+      console.log("image");
       store["shopImage"] = imageURIs; // add the urls to object
+      console.log("object");
 
       const s1 = await store.save();
       return res.status(200).json({
@@ -108,6 +115,7 @@ router.post("/", upload.array("shopImage"), async (req, res) => {
     });
   } catch (err) {
     if (err) {
+      console.log(err);
       return res.status(400).json({
         error: "Your request could not be processed. Please try again.....",
       });
@@ -232,7 +240,7 @@ router.post("/login", (req, res) => {
   });
 });
 
-// Current day(Today) getAllStoreByIdAndDateSortByDate
+// No. od store addded today
 
 router.get("/user/list/:id", async (req, res) => {
   try {
@@ -262,7 +270,7 @@ router.get("/user/list/:id", async (req, res) => {
       }).sort({ createdAt: -1 })
     ).filter((store) => store.isActive === true);
 
-    res.json(stores);
+    res.json(stores.length);
   } catch (err) {
     if (err) {
       return res.status(400).json({
@@ -307,6 +315,7 @@ router.get("/user/list/dates/:id", async (req, res) => {
     if (err) {
       return res.status(400).json({
         error: "Your request could not be processed. Please try again.",
+        message: err,
       });
     }
   }
