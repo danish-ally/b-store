@@ -24,7 +24,7 @@ const storeSchema = new Schema(
 
     shopCode: {
       type: Number,
-      // unique: true,
+      unique: true,
     },
     shopName: {
       type: String,
@@ -55,6 +55,11 @@ const storeSchema = new Schema(
     },
 
     shopImage: [
+      {
+        type: String,
+      },
+    ],
+    shopImageId: [
       {
         type: String,
       },

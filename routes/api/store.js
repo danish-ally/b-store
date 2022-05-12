@@ -44,7 +44,7 @@ router.get("/:id", async (req, res) => {
 
 // Add store
 
-router.post("/", upload.array("shopImage"), async (req, res) => {
+router.post("/", async (req, res) => {
   const token =
     (await jwt.decode(req.headers.authorization.split(" ")[1])) ||
     req.headers.authorization;
@@ -62,56 +62,14 @@ router.post("/", upload.array("shopImage"), async (req, res) => {
 
     store.password = hash;
     console.log("object");
-
-    if (req.files.length < 5) {
-      return res.status(400).json({
-        // in case things don't work out
-        msg: "Please upload minimum 5 images",
-      });
-    }
-
     console.log("first");
-    if (req.files) {
-      // if you are adding multiple files at a go
-      console.log("fff");
-      const imageURIs = []; // array to hold the image urls
-      const files = req.files; // array of images
-      // console.log(files);
-      for (const file of files) {
-        // console.log(file);/
-        const result = await cloudinary.uploader.upload(file.path);
-        console.log(file.path);
-        imageURIs.push(result.secure_url);
-      }
 
-      console.log("image");
-      store["shopImage"] = imageURIs; // add the urls to object
-      console.log("object");
-
-      const s1 = await store.save();
-      return res.status(200).json({
-        success: true,
-        message: `Store has been added successfully!`,
-        store: s1,
-      });
-    }
-
-    if (req.file && req.file.path) {
-      // if only one image uploaded
-      store["shopImage"] = req.file.path; // add the single
-      const s1 = await store.save();
-      return res.status(200).json({
-        success: true,
-        message: `Store has been added successfully!`,
-        store: s1,
-      });
-    }
-
-    // you could save here without the image
-
-    return res.status(400).json({
-      // in case things don't work out
-      msg: "Please upload an image",
+    // if only one image uploaded
+    const s1 = await store.save();
+    return res.status(200).json({
+      success: true,
+      message: `Store has been added successfully!`,
+      store: s1,
     });
   } catch (err) {
     if (err) {
