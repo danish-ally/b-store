@@ -28,7 +28,6 @@ const storeSchema = new Schema(
     },
     shopName: {
       type: String,
-    
     },
 
     shopType: {
@@ -55,9 +54,16 @@ const storeSchema = new Schema(
       type: String,
     },
 
-    profilePhoto: {
-      type: String,
-    },
+    shopImage: [
+      {
+        type: String,
+      },
+    ],
+    shopImageId: [
+      {
+        type: String,
+      },
+    ],
 
     dateOfOpening: {
       type: Date,

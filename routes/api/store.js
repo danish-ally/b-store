@@ -5,6 +5,9 @@ const jwt_decode = require("jwt-decode");
 const jwt = require("jsonwebtoken");
 const key = require("../../config/key");
 const bcrypt = require("bcryptjs");
+const cloudinary = require("../../utils/cloudinary");
+const upload = require("../../utils/multer");
+const fs = require("fs");
 
 // get All store
 router.get("/", async (req, res) => {
@@ -49,30 +52,28 @@ router.post("/", async (req, res) => {
   const userId = token.id;
   console.log(userId);
 
-  // const code = req.body.code;
-
-  // const existingCode = await Store.findOne({ code });
-
-  // if (existingCode) {
-  //   return res.status(400).json({ error: "That code is already in use." });
-  // }
-
+  console.log("object");
   const store = new Store(Object.assign(req.body, { createdBy: userId }));
+  console.log("object");
 
   try {
     const salt = await bcrypt.genSalt(10);
     const hash = await bcrypt.hash(store.password, salt);
 
     store.password = hash;
+    console.log("object");
+    console.log("first");
 
+    // if only one image uploaded
     const s1 = await store.save();
-    res.status(200).json({
+    return res.status(200).json({
       success: true,
       message: `Store has been added successfully!`,
       store: s1,
     });
   } catch (err) {
     if (err) {
+      console.log(err);
       return res.status(400).json({
         error: "Your request could not be processed. Please try again.....",
       });
@@ -197,7 +198,7 @@ router.post("/login", (req, res) => {
   });
 });
 
-// Current day(Today) getAllStoreByIdAndDateSortByDate
+// No. od store addded today
 
 router.get("/user/list/:id", async (req, res) => {
   try {
@@ -227,7 +228,7 @@ router.get("/user/list/:id", async (req, res) => {
       }).sort({ createdAt: -1 })
     ).filter((store) => store.isActive === true);
 
-    res.json(stores);
+    res.json(stores.length);
   } catch (err) {
     if (err) {
       return res.status(400).json({
@@ -272,6 +273,7 @@ router.get("/user/list/dates/:id", async (req, res) => {
     if (err) {
       return res.status(400).json({
         error: "Your request could not be processed. Please try again.",
+        message: err,
       });
     }
   }
