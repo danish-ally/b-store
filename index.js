@@ -4,8 +4,8 @@ const mongoose = require("mongoose");
 const { port } = require("./config/key");
 const routes = require("./routes");
 const cors = require("cors");
-const bodyParser = require('body-parser')
-const url = "mongodb://localhost/byit-be-iam";
+
+// const url = "mongodb://localhost/byit-be-iam";
 const app = express();
 
 app.use(express.urlencoded({ extended: false }));
@@ -13,7 +13,7 @@ app.use(express.json());
 app.use(cors());
 
 mongoose
-  .connect(url, {
+  .connect(process.env.DATABASE_ACCESS, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
   })
