@@ -47,7 +47,7 @@ const storeSchema = new Schema(
     },
 
     city: {
-      type: Schema.Types.ObjectId,
+      type: String,
     },
 
     phoneNo: {
