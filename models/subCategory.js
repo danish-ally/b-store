@@ -13,11 +13,6 @@ const SubCategorySchema = new Schema({
     unique: true,
   },
 
-  category: {
-    type: Schema.ObjectId,
-    required: true,
-  },
-
   isActive: {
     type: Boolean,
     default: true,

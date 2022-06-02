@@ -11,12 +11,23 @@ const fs = require("fs");
 
 // get All store
 router.get("/", async (req, res) => {
-  try {
-    const stores = await (
-      await Store.find().sort({ createdAt: -1 })
-    ).filter((store) => store.isActive === true);
+  const cityName = req.query.city;
 
-    res.json(stores);
+  console.log(cityName);
+  try {
+    if (!cityName) {
+      const stores = await (
+        await Store.find().sort({ createdAt: -1 })
+      ).filter((store) => store.isActive === true);
+
+      res.json(stores);
+    } else {
+      const stores = await (
+        await Store.find({ city: cityName }).sort({ createdAt: -1 })
+      ).filter((store) => store.isActive === true);
+
+      res.json(stores);
+    }
   } catch (err) {
     if (err) {
       return res.status(400).json({

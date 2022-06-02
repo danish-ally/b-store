@@ -13,6 +13,10 @@ const ProductSchema = new Schema({
     unique: true,
   },
 
+  shopCode: {
+    type: Number,
+  },
+
   dimension: {
     type: String,
     required: true,
@@ -23,10 +27,21 @@ const ProductSchema = new Schema({
     required: true,
   },
 
-  subCategory: {
+  category: {
     type: Schema.ObjectId,
     required: true,
   },
+
+  productImage: [
+    {
+      type: String,
+    },
+  ],
+  productImageId: [
+    {
+      type: String,
+    },
+  ],
 
   isActive: {
     type: Boolean,

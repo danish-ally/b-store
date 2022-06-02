@@ -13,6 +13,17 @@ const CategorySchema = new Schema({
     unique: true,
   },
 
+  categoryImage: [
+    {
+      type: String,
+    },
+  ],
+  categoryImageId: [
+    {
+      type: String,
+    },
+  ],
+
   isActive: {
     type: Boolean,
     default: true,
