@@ -32,6 +32,20 @@ const ProductSchema = new Schema({
     required: true,
   },
 
+  price: {
+    type: String,
+    required: true,
+  },
+
+  description: {
+    type: String,
+    required: true,
+  },
+  quantity: {
+    type: String,
+    required: true,
+  },
+
   productImage: [
     {
       type: String,
