@@ -209,7 +209,7 @@ router.post("/login", (req, res) => {
   });
 });
 
-// No. od store addded today
+// No. of store addded today
 
 router.get("/user/list/:id", async (req, res) => {
   try {
@@ -285,6 +285,33 @@ router.get("/user/list/dates/:id", async (req, res) => {
       return res.status(400).json({
         error: "Your request could not be processed. Please try again.",
         message: err,
+      });
+    }
+  }
+});
+
+// check shopcode
+router.post("/check/shopCode", async (req, res) => {
+  const shopCode = req.body.shopCode;
+  console.log(shopCode);
+  try {
+    const existingShopCode = await Store.findOne({ shopCode });
+
+    if (existingShopCode) {
+      return res
+        .status(400)
+        .json({ error: "That shop code address is already in use." });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: `You can proceed with this shop coode`,
+      shopcode: shopCode,
+    });
+  } catch (err) {
+    if (err) {
+      return res.status(400).json({
+        error: "Your request could not be processed. Please try again.",
       });
     }
   }
