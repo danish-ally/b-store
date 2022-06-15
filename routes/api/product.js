@@ -4,12 +4,34 @@ const Product = require("../../models/product");
 
 // get All products
 router.get("/", async (req, res) => {
+  const categoryId = req.query.category;
+  const shopCode = req.query.shopCode;
+  console.log(shopCode);
   try {
-    const products = await (
-      await Product.find()
-    ).filter((product) => product.isActive === true);
+    if (!categoryId && !shopCode) {
+      const products = await (
+        await Product.find()
+      ).filter((product) => product.isActive === true);
+      return res.json(products);
+    } else if (categoryId && shopCode) {
+      const products = await (
+        await Product.find({ category: categoryId, shopCode: shopCode })
+      ).filter((product) => product.isActive === true);
 
-    res.json(products);
+      return res.json(products);
+    } else if (categoryId && !shopCode) {
+      const products = await (
+        await Product.find({ category: categoryId })
+      ).filter((product) => product.isActive === true);
+
+      return res.json(products);
+    } else {
+      const products = await (
+        await Product.find({ shopCode: shopCode })
+      ).filter((product) => product.isActive === true);
+
+      return res.json(products);
+    }
   } catch (err) {
     if (err) {
       return res.status(400).json({
