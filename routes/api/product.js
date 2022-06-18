@@ -57,7 +57,14 @@ router.get("/:id", async (req, res) => {
 
 // Add Product
 router.post("/", async (req, res) => {
-  const product = new Product(Object.assign(req.body));
+  const token =
+    (await jwt.decode(req.headers.authorization.split(" ")[1])) ||
+    req.headers.authorization;
+
+  const userId = token.id;
+  console.log(userId);
+
+  const product = new Product(Object.assign(req.body, { createdBy: userId }));
 
   try {
     const p1 = await product.save();
@@ -126,6 +133,23 @@ router.get("/list/:id", async (req, res) => {
   try {
     const products = await (
       await Product.find({ subCategory: req.params.id })
+    ).filter((product) => product.isActive === true);
+
+    res.json(products);
+  } catch (err) {
+    if (err) {
+      return res.status(400).json({
+        error: "Your request could not be processed. Please try again.",
+      });
+    }
+  }
+});
+
+// get All product by user Id
+router.get("/list/:id", async (req, res) => {
+  try {
+    const products = await (
+      await Product.find({ createdBy: req.params.id })
     ).filter((product) => product.isActive === true);
 
     res.json(products);

@@ -13,6 +13,9 @@ const ProductSchema = new Schema({
     unique: true,
   },
 
+  createdBy: {
+    type: Schema.Types.ObjectId,
+  },
   shopCode: {
     type: Number,
   },

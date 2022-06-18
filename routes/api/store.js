@@ -139,10 +139,10 @@ router.delete("/:id", async (req, res) => {
 });
 
 // get All store by user Id
-router.get("/list/:id", async (req, res) => {
+router.get("/list/:id",  async (req, res) => {
   try {
     const stores = await (
-      await Store.find({ user: req.params.id }).sort({ createdAt: -1 })
+      await Store.find({ createdBy: req.params.id })
     ).filter((store) => store.isActive === true);
 
     res.json(stores);
