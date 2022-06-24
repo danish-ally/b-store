@@ -60,6 +60,19 @@ const ProductSchema = new Schema({
     },
   ],
 
+  isFeatured: {
+    type: Boolean,
+    default: false,
+  },
+  isNewAddition: {
+    type: Boolean,
+    default: false,
+  },
+
+  roomType: {
+    type: String,
+  },
+
   isActive: {
     type: Boolean,
     default: true,
