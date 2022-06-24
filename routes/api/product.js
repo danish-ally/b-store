@@ -12,24 +12,26 @@ router.get("/", async (req, res) => {
   try {
     if (!categoryId && !shopCode) {
       const products = await (
-        await Product.find()
+        await Product.find().sort({ created: -1 })
       ).filter((product) => product.isActive === true);
       return res.json(products);
     } else if (categoryId && shopCode) {
       const products = await (
-        await Product.find({ category: categoryId, shopCode: shopCode })
+        await Product.find({ category: categoryId, shopCode: shopCode }).sort({
+          created: -1,
+        })
       ).filter((product) => product.isActive === true);
 
       return res.json(products);
     } else if (categoryId && !shopCode) {
       const products = await (
-        await Product.find({ category: categoryId })
+        await Product.find({ category: categoryId }).sort({ created: -1 })
       ).filter((product) => product.isActive === true);
 
       return res.json(products);
     } else {
       const products = await (
-        await Product.find({ shopCode: shopCode })
+        await Product.find({ shopCode: shopCode }).sort({ created: -1 })
       ).filter((product) => product.isActive === true);
 
       return res.json(products);
