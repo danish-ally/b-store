@@ -4,6 +4,26 @@ const Carousel = require("../../models/carousel");
 const cloudinary = require("../../utils/cloudinary");
 const upload = require("../../utils/multer");
 
+
+
+
+
+// get All carousel
+router.get("/", async (req, res) => {
+  try {
+    const carousel = await (
+      await Carousel.find().sort({ created: -1 })
+    ).filter((carousel) => carousel.isActive === true);
+
+    res.json(carousel);
+  } catch (err) {
+    if (err) {
+      return res.status(400).json({
+        error: "Your request could not be processed. Please try again.",
+      });
+    }
+  }
+});
 // Add Carousel
 router.post("/", upload.single("image"), async (req, res) => {
 
@@ -42,6 +62,31 @@ router.post("/", upload.single("image"), async (req, res) => {
     }
   });
 
+//delete
+
+  // delete Catgory by id
+router.delete("/:id", async (req, res) => {
+  try {
+    const carouselId = req.params.id;
+    const update = {
+      isActive: false,
+    };
+    const query = { _id: carouselId };
+
+    await Carousel.findOneAndUpdate(query, update, {
+      new: true,
+    });
+
+    res.status(200).json({
+      success: true,
+      message: "Carousel has been deleted successfully!",
+    });
+  } catch (error) {
+    res.status(400).json({
+      error: "Your request could not be processed. Please try again.",
+    });
+  }
+});
 
 
   module.exports = router;
