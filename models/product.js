@@ -78,6 +78,11 @@ const ProductSchema = new Schema({
     default: true,
   },
 
+  isRemoved: {
+    type: Boolean,
+    default: false,
+  },
+
   updated: Date,
   created: {
     type: Date,

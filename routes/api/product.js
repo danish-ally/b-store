@@ -13,26 +13,26 @@ router.get("/", async (req, res) => {
     if (!categoryId && !shopCode) {
       const products = await (
         await Product.find().sort({ created: -1 })
-      ).filter((product) => product.isActive === true);
+      ).filter((product) => product.isRemoved === false);
       return res.json(products);
     } else if (categoryId && shopCode) {
       const products = await (
         await Product.find({ category: categoryId, shopCode: shopCode }).sort({
           created: -1,
         })
-      ).filter((product) => product.isActive === true);
+      ).filter((product) => product.isRemoved === false);
 
       return res.json(products);
     } else if (categoryId && !shopCode) {
       const products = await (
         await Product.find({ category: categoryId }).sort({ created: -1 })
-      ).filter((product) => product.isActive === true);
+      ).filter((product) => product.isRemoved === false);
 
       return res.json(products);
     } else {
       const products = await (
         await Product.find({ shopCode: shopCode }).sort({ created: -1 })
-      ).filter((product) => product.isActive === true);
+      ).filter((product) => product.isRemoved === false);
 
       return res.json(products);
     }
@@ -113,7 +113,7 @@ router.delete("/:id", async (req, res) => {
   try {
     const productId = req.params.id;
     const update = {
-      isActive: false,
+      isRemoved: true,
     };
     const query = { _id: productId };
 
@@ -137,7 +137,7 @@ router.get("/list/:id", async (req, res) => {
   try {
     const products = await (
       await Product.find({ subCategory: req.params.id })
-    ).filter((product) => product.isActive === true);
+    ).filter((product) => product.isRemoved === false);
 
     res.json(products);
   } catch (err) {
@@ -154,7 +154,7 @@ router.get("/list/user/:id", async (req, res) => {
   try {
     const products = await (
       await Product.find({ createdBy: req.params.id })
-    ).filter((product) => product.isActive === true);
+    ).filter((product) => product.isRemoved === false);
 
     res.json(products);
   } catch (err) {
@@ -191,7 +191,7 @@ router.get("/roomType/list", async (req, res) => {
   try {
     const products = await (
       await Product.find({ roomType: roomType })
-    ).filter((product) => product.isActive === true);
+    ).filter((product) => product.isRemoved === false);
 
     res.json(products);
   } catch (err) {
