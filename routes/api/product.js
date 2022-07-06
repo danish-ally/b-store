@@ -8,33 +8,86 @@ const bcrypt = require("bcryptjs");
 router.get("/", async (req, res) => {
   const categoryId = req.query.category;
   const shopCode = req.query.shopCode;
+  const searchKeyword = req.query.name;
+  console.log(searchKeyword);
   console.log(shopCode);
+  console.log(categoryId);
+
   try {
     if (!categoryId && !shopCode) {
       const products = await (
         await Product.find().sort({ created: -1 })
-      ).filter((product) => product.isActive === true);
-      return res.json(products);
+      ).filter((product) => product.isRemoved === false);
+
+      if (searchKeyword) {
+        console.log("inside");
+        Product.find({ name: { $regex: searchKeyword, $options: "$i" } }).then(
+          (data) => {
+            return res.json(data);
+          }
+        );
+        console.log("inside");
+      } else {
+        return res.json(products);
+      }
     } else if (categoryId && shopCode) {
-      const products = await (
-        await Product.find({ category: categoryId, shopCode: shopCode }).sort({
-          created: -1,
-        })
-      ).filter((product) => product.isActive === true);
+      if (searchKeyword) {
+        const products = await (
+          await Product.find({
+            name: { $regex: searchKeyword, $options: "$i" },
+            category: categoryId,
+            shopCode: shopCode,
+          }).sort({
+            created: -1,
+          })
+        ).filter((product) => product.isRemoved === false);
 
-      return res.json(products);
+        return res.json(products);
+      } else {
+        const products = await (
+          await Product.find({ category: categoryId, shopCode: shopCode }).sort(
+            {
+              created: -1,
+            }
+          )
+        ).filter((product) => product.isRemoved === false);
+
+        return res.json(products);
+      }
     } else if (categoryId && !shopCode) {
-      const products = await (
-        await Product.find({ category: categoryId }).sort({ created: -1 })
-      ).filter((product) => product.isActive === true);
+      if (searchKeyword) {
+        const products = await (
+          await Product.find({
+            name: { $regex: searchKeyword, $options: "$i" },
+            category: categoryId,
+          }).sort({ created: -1 })
+        ).filter((product) => product.isRemoved === false);
 
-      return res.json(products);
+        return res.json(products);
+      } else {
+        const products = await (
+          await Product.find({ category: categoryId }).sort({ created: -1 })
+        ).filter((product) => product.isRemoved === false);
+
+        return res.json(products);
+      }
     } else {
-      const products = await (
-        await Product.find({ shopCode: shopCode }).sort({ created: -1 })
-      ).filter((product) => product.isActive === true);
+      if (searchKeyword) {
+        const products = await (
+          await Product.find({
+            name: { $regex: searchKeyword, $options: "$i" },
+            shopCode: shopCode,
+          }).sort({ created: -1 })
+        ).filter((product) => product.isRemoved === false);
 
-      return res.json(products);
+        return res.json(products);
+      } else {
+        const products = await (
+          await Product.find({ shopCode: shopCode }).sort({ created: -1 })
+        ).filter((product) => product.isRemoved === false);
+
+        return res.json(products);
+      }
     }
   } catch (err) {
     if (err) {
