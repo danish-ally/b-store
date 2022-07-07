@@ -114,7 +114,7 @@ router.delete("/:id", async (req, res) => {
   try {
     const productId = req.params.id;
     const update = {
-      isActive: false,
+      isRemoved: true,
     };
     const query = { _id: productId };
 
@@ -138,7 +138,7 @@ router.get("/list/:id", async (req, res) => {
   try {
     const products = await (
       await Product.find({ subCategory: req.params.id })
-    ).filter((product) => product.isActive === true);
+    ).filter((product) => product.isRemoved === false);
 
     res.json(products);
   } catch (err) {
@@ -155,7 +155,7 @@ router.get("/list/user/:id", async (req, res) => {
   try {
     const products = await (
       await Product.find({ createdBy: req.params.id })
-    ).filter((product) => product.isActive === true);
+    ).filter((product) => product.isRemoved === false);
 
     res.json(products);
   } catch (err) {
@@ -192,7 +192,7 @@ router.get("/roomType/list", async (req, res) => {
   try {
     const products = await (
       await Product.find({ roomType: roomType })
-    ).filter((product) => product.isActive === true);
+    ).filter((product) => product.isRemoved === false);
 
     res.json(products);
   } catch (err) {

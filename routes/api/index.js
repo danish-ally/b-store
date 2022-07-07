@@ -7,6 +7,10 @@ const subCategoryRoutes = require("./subCategory");
 const productRoutes = require("./product");
 const uploadRoutes = require("./upload");
 const roomTypeRoutes = require("./roomType");
+const carouselRoutes = require("./carousel");
+const infoBoxRoutes = require("./infoBox");
+
+
 
 // city routes
 router.use("/city", cityRoutes);
@@ -24,5 +28,9 @@ router.use("/product", productRoutes);
 router.use("/upload", uploadRoutes);
 // RoomType routes
 router.use("/roomType", roomTypeRoutes);
+// Carousel routes
+router.use("/carousel", carouselRoutes);
+// Carousel routes
+router.use("/infoBox", infoBoxRoutes);
 
 module.exports = router;
