@@ -85,6 +85,23 @@ const storeSchema = new Schema(
     pincode: {
       type: String,
     },
+    isPointOfContact: {
+      type: Boolean,
+      default: false,
+    },
+    pocFirstName: {
+      type: String,
+    },
+    pocLastName: {
+      type: String,
+    },
+
+    pocPhoneNo: {
+      type: String,
+    },
+    pocEmail: {
+      type: String,
+    },
 
     isActive: {
       type: Boolean,

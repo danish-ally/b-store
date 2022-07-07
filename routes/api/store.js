@@ -319,22 +319,16 @@ router.post("/check/shopCode", async (req, res) => {
   }
 });
 
-// get all store category details
+
+
+
+// get all selected store categories and not selected store categories
 
 router.get("/category/list", async (req, res) => {
-  var result = [];
-  console.log("first")
+  
+  
   try {
-    const categorios = await axios
-      .get(`https://byit-be-store.herokuapp.com/api/category`)
-      .then(function (response) {
-        res.status(200).json({
-          data: response.data
-        });
-        // console.log(response);
-      });
-
-      console.log("first", categorios)
+    
   } catch (err) {
     if (err) {
       return res.status(400).json({
@@ -343,5 +337,7 @@ router.get("/category/list", async (req, res) => {
     }
   }
 });
+
+
 
 module.exports = router;
