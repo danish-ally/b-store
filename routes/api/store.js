@@ -8,6 +8,8 @@ const bcrypt = require("bcryptjs");
 const cloudinary = require("../../utils/cloudinary");
 const upload = require("../../utils/multer");
 const fs = require("fs");
+const axios = require("axios").default;
+
 
 // get All store
 router.get("/", async (req, res) => {
@@ -139,7 +141,7 @@ router.delete("/:id", async (req, res) => {
 });
 
 // get All store by user Id
-router.get("/list/:id",  async (req, res) => {
+router.get("/list/:id", async (req, res) => {
   try {
     const stores = await (
       await Store.find({ createdBy: req.params.id })
@@ -312,6 +314,31 @@ router.post("/check/shopCode", async (req, res) => {
     if (err) {
       return res.status(400).json({
         error: "Your request could not be processed. Please try again.",
+      });
+    }
+  }
+});
+
+// get all store category details
+
+router.get("/category/list", async (req, res) => {
+  var result = [];
+  console.log("first")
+  try {
+    const categorios = await axios
+      .get(`https://byit-be-store.herokuapp.com/api/category`)
+      .then(function (response) {
+        res.status(200).json({
+          data: response.data
+        });
+        // console.log(response);
+      });
+
+      console.log("first", categorios)
+  } catch (err) {
+    if (err) {
+      return res.status(400).json({
+        error: "Your request could not be processed. Please try again.///",
       });
     }
   }
