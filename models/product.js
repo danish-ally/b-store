@@ -72,6 +72,10 @@ const ProductSchema = new Schema({
     type: Boolean,
     default: false,
   },
+  isApproved: {
+    type: Boolean,
+    default: false,
+  },
 
   roomType: {
     type: String,

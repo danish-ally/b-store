@@ -4,7 +4,49 @@ const Product = require("../../models/product");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 
-// get All products
+// get All products (Distributor app)
+router.get("/distributor", async (req, res) => {
+  const categoryId = req.query.categoryId;
+  const shopCode = req.query.shopCode;
+  const searchKeyword = req.query.keyword;
+
+  try {
+    let products = await (
+      await Product.find().sort({ createdAt: -1 })
+    ).filter((product) => product.isRemoved === false);
+    console.log(products);
+
+    if (categoryId) {
+      products = products.filter((prod) => prod.category == categoryId);
+    }
+
+    if (shopCode) {
+      products = products.filter((prod) => prod.shopCode == shopCode);
+    }
+
+    if (searchKeyword) {
+      const fproducts = products.filter((element) => {
+        console.log(element.name);
+        if (element.name.toLowerCase().includes(searchKeyword.toLowerCase())) {
+          return true;
+        }
+      });
+
+      return res.json(fproducts);
+    }
+
+    return res.json(products);
+  } catch (err) {
+    if (err) {
+      return res.status(400).json({
+        error: "Your request could not be processed. Please try again.",
+        message: err.message,
+      });
+    }
+  }
+});
+
+// get All products which is approved
 router.get("/", async (req, res) => {
   const categoryId = req.query.categoryId;
   const shopCode = req.query.shopCode;
@@ -13,7 +55,53 @@ router.get("/", async (req, res) => {
   try {
     let products = await (
       await Product.find().sort({ createdAt: -1 })
-    ).filter((store) => store.isRemoved === false);
+    ).filter(
+      (product) => product.isRemoved === false && product.isApproved === true
+    );
+    console.log(products);
+
+    if (categoryId) {
+      products = products.filter((prod) => prod.category == categoryId);
+    }
+
+    if (shopCode) {
+      products = products.filter((prod) => prod.shopCode == shopCode);
+    }
+
+    if (searchKeyword) {
+      const fproducts = products.filter((element) => {
+        console.log(element.name);
+        if (element.name.toLowerCase().includes(searchKeyword.toLowerCase())) {
+          return true;
+        }
+      });
+
+      return res.json(fproducts);
+    }
+
+    return res.json(products);
+  } catch (err) {
+    if (err) {
+      return res.status(400).json({
+        error: "Your request could not be processed. Please try again.",
+        message: err.message,
+      });
+    }
+  }
+});
+
+// get All products which is not approved
+router.get("/notApproved/", async (req, res) => {
+  const categoryId = req.query.categoryId;
+  const shopCode = req.query.shopCode;
+  const searchKeyword = req.query.keyword;
+
+  try {
+    let products = await (
+      await Product.find().sort({ createdAt: -1 })
+    ).filter(
+      (product) => product.isRemoved === false && product.isApproved === false
+    );
     console.log(products);
 
     if (categoryId) {
@@ -60,6 +148,23 @@ router.get("/:id", async (req, res) => {
   }
 });
 
+// Get All Product which is not approved
+router.get("/notApproved", async (req, res) => {
+  try {
+    let products = await (
+      await Product.find().sort({ createdAt: -1 })
+    ).filter(
+      (product) => product.isRemoved === false && product.isApproved === false
+    );
+    console.log(products);
+
+    return res.json(products);
+  } catch (err) {
+    return res.status(400).json({
+      error: "Your request could not be processed. Please try again.",
+    });
+  }
+});
 // Add Product
 router.post("/", async (req, res) => {
   const token =
