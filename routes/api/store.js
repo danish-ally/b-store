@@ -8,6 +8,8 @@ const bcrypt = require("bcryptjs");
 const cloudinary = require("../../utils/cloudinary");
 const upload = require("../../utils/multer");
 const fs = require("fs");
+const Category = require("../../models/category");
+const axios = require("axios").default;
 
 // get All store
 router.get("/", async (req, res) => {
@@ -99,6 +101,8 @@ router.put("/:id", async (req, res) => {
     const update = req.body;
     const query = { _id: storeId };
 
+    console.log(update);
+
     await Store.findOneAndUpdate(query, update, {
       new: true,
     });
@@ -139,7 +143,7 @@ router.delete("/:id", async (req, res) => {
 });
 
 // get All store by user Id
-router.get("/list/:id",  async (req, res) => {
+router.get("/list/:id", async (req, res) => {
   try {
     const stores = await (
       await Store.find({ createdBy: req.params.id })
@@ -312,6 +316,38 @@ router.post("/check/shopCode", async (req, res) => {
     if (err) {
       return res.status(400).json({
         error: "Your request could not be processed. Please try again.",
+      });
+    }
+  }
+});
+
+// get all selected store categories and not selected store categories
+
+router.get("/category/list/:id", async (req, res) => {
+  try {
+    var result = [];
+    const categories = await (
+      await Category.find()
+    ).filter((category) => category.isActive === true);
+
+    const store = await Store.findById(req.params.id);
+    const selectedCategories = store.shopCategory.toString();
+
+    for (let i = 0; i < categories.length; i++) {
+      const element = categories[i].name;
+      if (selectedCategories.includes(element)) {
+        result.push({ name: element, isSelected: true });
+      } else {
+        result.push({ name: element, isSelected: false });
+      }
+    }
+
+    return res.json(result);
+  } catch (err) {
+    if (err) {
+      return res.status(400).json({
+        error: "Your request could not be processed. Please try again.///",
+        msg: err.message,
       });
     }
   }

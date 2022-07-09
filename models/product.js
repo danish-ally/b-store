@@ -64,7 +64,15 @@ const ProductSchema = new Schema({
     type: Boolean,
     default: false,
   },
+  isRemoved: {
+    type: Boolean,
+    default: false,
+  },
   isNewAddition: {
+    type: Boolean,
+    default: false,
+  },
+  isApproved: {
     type: Boolean,
     default: false,
   },
