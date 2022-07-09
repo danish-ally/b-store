@@ -4,15 +4,15 @@ const Product = require("../../models/product");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 
-// get All products (Distributor app)
-router.get("/distributor", async (req, res) => {
+// get All products By User Id(Distributor app)
+router.get("/distributor/:id", async (req, res) => {
   const categoryId = req.query.categoryId;
   const shopCode = req.query.shopCode;
   const searchKeyword = req.query.keyword;
 
   try {
     let products = await (
-      await Product.find().sort({ createdAt: -1 })
+      await Product.find({ createdBy: req.params.id }).sort({ createdAt: -1 })
     ).filter((product) => product.isRemoved === false);
     console.log(products);
 
