@@ -63,11 +63,14 @@ router.post("/", async (req, res) => {
     req.headers.authorization;
 
   const userId = token.id;
-  console.log(userId);
 
-  console.log("object");
-  const store = new Store(Object.assign(req.body, { createdBy: userId }));
-  console.log("object");
+  const shopCategoryArray = req.body.shopCategory.split(",");
+  const store = new Store(
+    Object.assign(req.body, {
+      shopCategory: shopCategoryArray,
+      createdBy: userId,
+    })
+  );
 
   try {
     const salt = await bcrypt.genSalt(10);
@@ -101,11 +104,15 @@ router.put("/:id", async (req, res) => {
     const update = req.body;
     const query = { _id: storeId };
 
-    console.log(update);
+    const shopCategoryArray = req.body.shopCategory.split(",");
 
-    await Store.findOneAndUpdate(query, update, {
-      new: true,
-    });
+    await Store.findOneAndUpdate(
+      query,
+      { update, shopCategory: shopCategoryArray },
+      {
+        new: true,
+      }
+    );
 
     res.status(200).json({
       success: true,
