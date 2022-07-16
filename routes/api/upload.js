@@ -15,7 +15,7 @@ router.post("/store/:id", upload.array("shopImage"), async (req, res) => {
   const store = await Store.findById(req.params.id);
 
   try {
-    if (req.files.length < 0) {
+    if (req.files.length <= 5) {
       return res.status(400).json({
         // in case things don't work out
         msg: "Please upload minimum 5 images",
