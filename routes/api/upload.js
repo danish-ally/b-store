@@ -15,7 +15,7 @@ router.post("/store/:id", upload.array("shopImage"), async (req, res) => {
   const store = await Store.findById(req.params.id);
 
   try {
-    if (req.files.length < 5) {
+    if (req.files.length <= 5) {
       return res.status(400).json({
         // in case things don't work out
         msg: "Please upload minimum 5 images",
@@ -29,7 +29,7 @@ router.post("/store/:id", upload.array("shopImage"), async (req, res) => {
       const imageURIs = []; // array to hold the image urls
       const imageIds = [];
       const files = req.files; // array of images
-      // console.log(files);
+      console.log(files);
       for (const file of files) {
         // console.log(file);/
         const result = await cloudinary.uploader.upload(file.path);
@@ -71,6 +71,7 @@ router.post("/store/:id", upload.array("shopImage"), async (req, res) => {
       console.log(err);
       return res.status(400).json({
         error: "Your request could not be processed. Please try again.....",
+        msg: err.message
       });
     }
   }

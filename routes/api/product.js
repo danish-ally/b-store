@@ -91,7 +91,7 @@ router.get("/", async (req, res) => {
 });
 
 // get All products which is not approved
-router.get("/notApproved/", async (req, res) => {
+router.get("/notApproved", async (req, res) => {
   const categoryId = req.query.categoryId;
   const shopCode = req.query.shopCode;
   const searchKeyword = req.query.keyword;
@@ -134,6 +134,50 @@ router.get("/notApproved/", async (req, res) => {
   }
 });
 
+
+// get All products no matter it is approved or not
+router.get("/allProducts", async (req, res) => {
+  const categoryId = req.query.categoryId;
+  const shopCode = req.query.shopCode;
+  const searchKeyword = req.query.keyword;
+
+  try {
+    let products = await (
+      await Product.find().sort({ createdAt: -1 })
+    ).filter(
+      (product) => product.isRemoved === false
+    );
+    console.log(products);
+
+    if (categoryId) {
+      products = products.filter((prod) => prod.category == categoryId);
+    }
+
+    if (shopCode) {
+      products = products.filter((prod) => prod.shopCode == shopCode);
+    }
+
+    if (searchKeyword) {
+      const fproducts = products.filter((element) => {
+        console.log(element.name);
+        if (element.name.toLowerCase().includes(searchKeyword.toLowerCase())) {
+          return true;
+        }
+      });
+
+      return res.json(fproducts);
+    }
+
+    return res.json(products);
+  } catch (err) {
+    if (err) {
+      return res.status(400).json({
+        error: "Your request could not be processed. Please try again.",
+        message: err.message,
+      });
+    }
+  }
+});
 // get product by id
 router.get("/:id", async (req, res) => {
   try {
@@ -148,23 +192,6 @@ router.get("/:id", async (req, res) => {
   }
 });
 
-// Get All Product which is not approved
-router.get("/notApproved", async (req, res) => {
-  try {
-    let products = await (
-      await Product.find().sort({ createdAt: -1 })
-    ).filter(
-      (product) => product.isRemoved === false && product.isApproved === false
-    );
-    console.log(products);
-
-    return res.json(products);
-  } catch (err) {
-    return res.status(400).json({
-      error: "Your request could not be processed. Please try again.",
-    });
-  }
-});
 // Add Product
 router.post("/", async (req, res) => {
   const token =
