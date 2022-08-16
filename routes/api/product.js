@@ -134,7 +134,6 @@ router.get("/notApproved", async (req, res) => {
   }
 });
 
-
 // get All products no matter it is approved or not
 router.get("/allProducts", async (req, res) => {
   const categoryId = req.query.categoryId;
@@ -144,9 +143,7 @@ router.get("/allProducts", async (req, res) => {
   try {
     let products = await (
       await Product.find().sort({ createdAt: -1 })
-    ).filter(
-      (product) => product.isRemoved === false
-    );
+    ).filter((product) => product.isRemoved === false);
     console.log(products);
 
     if (categoryId) {
@@ -335,5 +332,7 @@ router.get("/roomType/list", async (req, res) => {
     }
   }
 });
+
+
 
 module.exports = router;
