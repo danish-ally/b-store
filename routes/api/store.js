@@ -360,4 +360,41 @@ router.get("/category/list/:id", async (req, res) => {
   }
 });
 
+//get All category By distributor id
+router.get("/allStoreCategory/list/:id", async (req, res) => {
+  const distributorId = req.params.id;
+  var category = [];
+
+  try {
+    const stores = await (
+      await Store.find({ createdBy: distributorId }).sort({ createdAt: -1 })
+    ).filter((store) => store.isActive === true);
+    for (let i = 0; i < stores.length; i++) {
+      const element = stores[i];
+      if (element.shopCategory.length > 1) {
+        for (let j = 0; j < element.shopCategory.length; j++) {
+          const el = element.shopCategory[j];
+          if (!category.includes(el)) {
+            category.push(el);
+          }
+        }
+      } else {
+        if (!category.includes(element.shopCategory[0])) {
+          category.push(element.shopCategory[0]);
+        }
+      }
+    }
+
+    console.log(category);
+
+    res.json(category);
+  } catch (err) {
+    if (err) {
+      return res.status(400).json({
+        error: "Your request could not be processed. Please try again.",
+      });
+    }
+  }
+});
+
 module.exports = router;

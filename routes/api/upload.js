@@ -147,7 +147,7 @@ router.post("/product/:id", upload.array("file"), async (req, res) => {
   const product = await Product.findById(req.params.id);
 
   try {
-    if (req.files.length < 1) {
+    if (req.files.length <= 1) {
       return res.status(400).json({
         // in case things don't work out
         msg: "Please upload minimum 1 images",
