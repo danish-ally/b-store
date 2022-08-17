@@ -364,6 +364,13 @@ router.get("/category/list/:id", async (req, res) => {
 router.get("/allStoreCategory/list/:id", async (req, res) => {
   const distributorId = req.params.id;
   var category = [];
+  var result = [];
+  const categories = await (
+    await Category.find()
+  ).filter((category) => category.isActive === true);
+
+  // res.json(categories);
+  // console.log(categories.id)
 
   try {
     const stores = await (
@@ -385,9 +392,18 @@ router.get("/allStoreCategory/list/:id", async (req, res) => {
       }
     }
 
-    console.log(category);
+    for (let k = 0; k < category.length; k++) {
+      const eleK = category[k];
+      for (let p = 0; p < categories.length; p++) {
+        const eleP = categories[p].name;
+        const id = categories[p].id;
+        if (eleK === eleP) {
+          result.push({ id: id, name: eleP });
+        }
+      }
+    }
 
-    res.json(category);
+    res.json(result);
   } catch (err) {
     if (err) {
       return res.status(400).json({
