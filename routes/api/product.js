@@ -333,6 +333,44 @@ router.get("/roomType/list", async (req, res) => {
   }
 });
 
+// get All products By subCategoory Id
+router.get("/subCategory/:id", async (req, res) => {
+  const shopCode = req.query.shopCode;
+  const searchKeyword = req.query.keyword;
+
+  try {
+    let products = await (
+      await Product.find({ subCategory: req.params.id }).sort({ createdAt: -1 })
+    ).filter((product) => product.isRemoved === false);
+    console.log(products);
+
+
+
+    if (shopCode) {
+      products = products.filter((prod) => prod.shopCode == shopCode);
+    }
+
+    if (searchKeyword) {
+      const fproducts = products.filter((element) => {
+        console.log(element.name);
+        if (element.name.toLowerCase().includes(searchKeyword.toLowerCase())) {
+          return true;
+        }
+      });
+
+      return res.json(fproducts);
+    }
+
+    return res.json(products);
+  } catch (err) {
+    if (err) {
+      return res.status(400).json({
+        error: "Your request could not be processed. Please try again.",
+        message: err.message,
+      });
+    }
+  }
+});
 
 
 module.exports = router;

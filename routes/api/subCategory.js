@@ -103,7 +103,7 @@ router.delete("/:id", async (req, res) => {
 router.get("/list/:id", async (req, res) => {
   try {
     const subCategories = await (
-      await SubCategory.find({ category: req.params.id })
+      await SubCategory.find({ categoryId: req.params.id })
     ).filter((subCategory) => subCategory.isActive === true);
 
     res.json(subCategories);
