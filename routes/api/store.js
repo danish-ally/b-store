@@ -415,8 +415,6 @@ router.get("/allStoreCategory/list/:id", async (req, res) => {
   }
 });
 
-
-
 //get All subCategory By distributor id
 router.get("/allStoreSubCategory/list/:id", async (req, res) => {
   const distributorId = req.params.id;
@@ -433,20 +431,17 @@ router.get("/allStoreSubCategory/list/:id", async (req, res) => {
       await Product.find({ createdBy: distributorId }).sort({ createdAt: -1 })
     ).filter((product) => product.isActive === true);
 
-
     for (let i = 0; i < products.length; i++) {
       const element = products[i];
-      console.log(element.subCategory)
+      console.log(element.subCategory);
       // const toStringElement =  element.subCategory.toString();
       // console.log(toStringElement)
 
       if (!subCategory.includes(element)) {
         subCategory.push(element.subCategory);
       }
-
     }
     // res.json(subCategory);
-
 
     for (let k = 0; k < subCategory.length; k++) {
       const eleK = subCategory[k];
@@ -461,7 +456,11 @@ router.get("/allStoreSubCategory/list/:id", async (req, res) => {
       }
     }
 
-    res.json(result);
+    let unique = [
+      ...new Map(result.map((item) => [item["name"], item])).values(),
+    ];
+
+    res.json(unique);
   } catch (err) {
     if (err) {
       return res.status(400).json({

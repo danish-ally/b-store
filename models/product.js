@@ -34,6 +34,10 @@ const ProductSchema = new Schema({
     type: Schema.ObjectId,
     required: true,
   },
+  subCategory: {
+    type: Schema.ObjectId,
+    required: true,
+  },
 
   price: {
     type: String,
