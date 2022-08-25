@@ -10,6 +10,8 @@ const upload = require("../../utils/multer");
 const fs = require("fs");
 const Category = require("../../models/category");
 const axios = require("axios").default;
+const SubCategory = require("../../models/subCategory");
+const Product = require("../../models/product");
 
 // get All store
 router.get("/", async (req, res) => {
@@ -413,4 +415,59 @@ router.get("/allStoreCategory/list/:id", async (req, res) => {
   }
 });
 
+
+
+//get All subCategory By distributor id
+router.get("/allStoreSubCategory/list/:id", async (req, res) => {
+  const distributorId = req.params.id;
+  var subCategory = [];
+  var result = [];
+  const subCategories = await (
+    await SubCategory.find()
+  ).filter((subCategory) => subCategory.isActive === true);
+
+  // console.log(categories.id)
+
+  try {
+    const products = await (
+      await Product.find({ createdBy: distributorId }).sort({ createdAt: -1 })
+    ).filter((product) => product.isActive === true);
+
+
+    for (let i = 0; i < products.length; i++) {
+      const element = products[i];
+      console.log(element.subCategory)
+      // const toStringElement =  element.subCategory.toString();
+      // console.log(toStringElement)
+
+      if (!subCategory.includes(element)) {
+        subCategory.push(element.subCategory);
+      }
+
+    }
+    // res.json(subCategory);
+
+
+    for (let k = 0; k < subCategory.length; k++) {
+      const eleK = subCategory[k];
+      // console.log(eleK)
+      for (let p = 0; p < subCategories.length; p++) {
+        const eleP = subCategories[p].name;
+        const id = subCategories[p].id;
+        // console.log("if", id)
+        if (eleK == id) {
+          result.push({ id: id, name: eleP });
+        }
+      }
+    }
+
+    res.json(result);
+  } catch (err) {
+    if (err) {
+      return res.status(400).json({
+        error: "Your request could not be processed. Please try again.",
+      });
+    }
+  }
+});
 module.exports = router;
