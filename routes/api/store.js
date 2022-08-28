@@ -106,7 +106,7 @@ router.put("/:id", async (req, res) => {
     const update = req.body;
     const query = { _id: storeId };
 
-    const shopCategoryArray = req.body.shopCategory.split(",");
+    const shopCategoryArray = req.body.shopCategory;
 
     await Store.findOneAndUpdate(
       query,
