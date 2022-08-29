@@ -3,6 +3,7 @@ const router = express.Router();
 const Product = require("../../models/product");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
+const { CloudWatchLogs } = require("aws-sdk");
 const url = process.env.DATABASE_ACCESS;
 var MongoClient = require('mongodb').MongoClient;
 
@@ -60,6 +61,8 @@ router.get("/", async (req, res) => {
   const subCategoryId = req.query.subCategoryId
   const shopCode = req.query.shopCode;
   const searchKeyword = req.query.keyword;
+  const productTypeId = req.query.productTypeId;
+  console.log(productTypeId)
 
   try {
     let products = await (
@@ -67,7 +70,7 @@ router.get("/", async (req, res) => {
     ).filter(
       (product) => product.isRemoved === false && product.isApproved === true
     );
-    console.log(products);
+    // console.log(products);
 
     if (categoryId) {
       products = products.filter((prod) => prod.category == categoryId);
@@ -89,8 +92,15 @@ router.get("/", async (req, res) => {
         }
       });
 
+     
       return res.json(fproducts);
     }
+
+    if (productTypeId) {
+      console.log("dfdfd",productTypeId,"ll")
+      products = products.filter((prod) => prod.productType == productTypeId);
+    }
+
 
     return res.json(products);
   } catch (err) {
@@ -158,7 +168,7 @@ router.get("/allProducts", async (req, res) => {
   const subCategoryId = req.query.subCategoryId;
   const shopCode = req.query.shopCode;
   const searchKeyword = req.query.keyword;
-  const productType = req.query.productType;
+  const productTypeId = req.query.productTypeId;
 
   try {
     let products = await (
@@ -186,8 +196,8 @@ router.get("/allProducts", async (req, res) => {
         }
       });
 
-      if (productType) {
-        products = products.filter((prod) => prod.productType == productType);
+      if (productTypeId) {
+        products = products.filter((prod) => prod.productType == productTypeId);
       }
 
       return res.json(fproducts);

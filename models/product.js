@@ -84,9 +84,11 @@ const ProductSchema = new Schema({
   roomType: {
     type: String,
   },
-  productType:{
-    type: String
+  productType: {
+    type: Schema.ObjectId,
+    required: true,
   },
+
 
   isActive: {
     type: Boolean,
