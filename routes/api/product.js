@@ -3,6 +3,9 @@ const router = express.Router();
 const Product = require("../../models/product");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
+const url = process.env.DATABASE_ACCESS;
+var MongoClient = require('mongodb').MongoClient;
+
 
 // get All products By User Id(Distributor app)
 router.get("/distributor/:id", async (req, res) => {
@@ -149,12 +152,13 @@ router.get("/notApproved", async (req, res) => {
   }
 });
 
-// get All products no matter it is approved or not
+// get All products no matter it is approved or not and also getAllProductByProductType
 router.get("/allProducts", async (req, res) => {
   const categoryId = req.query.categoryId;
   const subCategoryId = req.query.subCategoryId;
   const shopCode = req.query.shopCode;
   const searchKeyword = req.query.keyword;
+  const productType = req.query.productType;
 
   try {
     let products = await (
@@ -165,7 +169,7 @@ router.get("/allProducts", async (req, res) => {
     if (categoryId) {
       products = products.filter((prod) => prod.category == categoryId);
     }
-    
+
     if (subCategoryId) {
       products = products.filter((prod) => prod.subCategory == subCategoryId);
     }
@@ -181,6 +185,10 @@ router.get("/allProducts", async (req, res) => {
           return true;
         }
       });
+
+      if (productType) {
+        products = products.filter((prod) => prod.productType == productType);
+      }
 
       return res.json(fproducts);
     }
@@ -391,6 +399,34 @@ router.get("/subCategory/:id", async (req, res) => {
     }
   }
 });
+
+
+// get All productTypes
+router.get("/types/productTypes", async (req, res) => {
+  console.log("jhgjhg")
+  try {
+    MongoClient.connect(url, function (err, db) {
+      if (err) throw err;
+      var dbo = db.db("be-store");
+      //Find all documents in the customers collection:
+      dbo.collection("productType").find({}).toArray(function (err, result) {
+        if (err) throw err;
+        res.json(result);
+        db.close();
+      });
+    });
+
+
+  } catch (err) {
+    if (err) {
+      return res.status(400).json({
+        error: "Your request could not be processed. Please try again..//.",
+        msg: err.message,
+      });
+    }
+  }
+});
+
 
 
 module.exports = router;

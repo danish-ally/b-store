@@ -84,6 +84,9 @@ const ProductSchema = new Schema({
   roomType: {
     type: String,
   },
+  productType:{
+    type: String
+  },
 
   isActive: {
     type: Boolean,
