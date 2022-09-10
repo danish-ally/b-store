@@ -7,6 +7,11 @@ const CategorySchema = new Schema({
     type: Schema.ObjectId,
     auto: true,
   },
+
+  productType: {
+    type: Schema.ObjectId,
+    required: true,
+  },
   name: {
     type: String,
     required: true,

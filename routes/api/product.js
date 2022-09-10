@@ -4,6 +4,7 @@ const Product = require("../../models/product");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 const { CloudWatchLogs } = require("aws-sdk");
+const SubCategory = require("../../models/subCategory");
 const url = process.env.DATABASE_ACCESS;
 var MongoClient = require('mongodb').MongoClient;
 
@@ -92,12 +93,12 @@ router.get("/", async (req, res) => {
         }
       });
 
-     
+
       return res.json(fproducts);
     }
 
     if (productTypeId) {
-      console.log("dfdfd",productTypeId,"ll")
+      console.log("dfdfd", productTypeId, "ll")
       products = products.filter((prod) => prod.productType == productTypeId);
     }
 
@@ -432,6 +433,51 @@ router.get("/types/productTypes", async (req, res) => {
       return res.status(400).json({
         error: "Your request could not be processed. Please try again..//.",
         msg: err.message,
+      });
+    }
+  }
+});
+
+
+
+
+
+
+
+
+// get All products with subCategoory name
+router.get("/subCategory/all/products", async (req, res) => {
+
+  console.log("inside")
+  const catId = req.query.catId;
+
+  try {
+    var result = [];
+
+
+    const subCategories = await (
+      await SubCategory.find({ categoryId: catId })
+    ).filter((subCategory) => subCategory.isActive === true);
+
+
+
+    for (let i = 0; i < subCategories.length; i++) {
+      const subCatId = subCategories[i]._id;
+      const subCatName = subCategories[i].name;
+      console.log(subCatName)
+      let products = await (
+        await Product.find({ subCategory: subCatId }).sort({ createdAt: -1 })
+      ).filter((product) => product.isRemoved === false);
+      console.log(products);
+      result.push({ subCategoryName: subCatName, products: products })
+    }
+
+    return res.json(result);
+  } catch (err) {
+    if (err) {
+      return res.status(400).json({
+        error: "Your request could not be processed. Please try again.",
+        message: err.message,
       });
     }
   }

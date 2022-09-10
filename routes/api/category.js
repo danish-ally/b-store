@@ -19,6 +19,25 @@ router.get("/", async (req, res) => {
   }
 });
 
+
+// get All Category by productType id
+router.get("/productType/:id", async (req, res) => {
+  try {
+    const categories = await (
+      await Category.find({ productType: req.params.id })
+    ).filter((category) => category.isActive === true);
+
+    res.json(categories);
+  } catch (err) {
+    if (err) {
+      return res.status(400).json({
+        error: "Your request could not be processed. Please try again.",
+      });
+    }
+  }
+});
+
+
 // get category by id
 router.get("/:id", async (req, res) => {
   try {
