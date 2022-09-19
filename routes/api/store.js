@@ -66,7 +66,7 @@ router.post("/", async (req, res) => {
 
   const userId = token.id;
 
-  const shopCategoryArray = req.body.shopCategory.split(",");
+  const shopCategoryArray = req.body.shopCategory
   const store = new Store(
     Object.assign(req.body, {
       shopCategory: shopCategoryArray,
