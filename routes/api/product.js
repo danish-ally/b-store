@@ -16,6 +16,7 @@ router.get("/distributor/:id", async (req, res) => {
   const shopCode = req.query.shopCode;
   const searchKeyword = req.query.keyword;
 
+
   try {
     let products = await (
       await Product.find({ createdBy: req.params.id }).sort({ createdAt: -1 })
@@ -63,6 +64,9 @@ router.get("/", async (req, res) => {
   const shopCode = req.query.shopCode;
   const searchKeyword = req.query.keyword;
   const productTypeId = req.query.productTypeId;
+  var lowPrice = req.query.lowPrice;
+  var highPrice = req.query.highPrice;
+
   console.log(productTypeId)
 
   try {
@@ -71,7 +75,9 @@ router.get("/", async (req, res) => {
     ).filter(
       (product) => product.isRemoved === false && product.isApproved === true
     );
-    // console.log(products);
+    // let products = await (await Product.find({ price: { $gte: lowPrice, $lte: highPrice } }).sort({ createdAt: -1 })).filter(
+    //   (product) => product.isRemoved === false && product.isApproved === true
+    // );
 
     if (categoryId) {
       products = products.filter((prod) => prod.category == categoryId);
